@@ -12,7 +12,7 @@ body{
 .central{
     display: flex;
     justify-content: space-between;
-    width: 45%;
+    width: 80%;
     margin: 8% 0px;
     text-align: center;
 }
