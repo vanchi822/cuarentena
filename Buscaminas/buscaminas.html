@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Buscaminas</title>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+	<div id="Buscaminas" class="tablero"></div>
+
+	<script type="text/babel">
+  class Fila extends React.Component{ //crea las filas
+
+    render(){ // al precionar un boton, manda la cordenada de la fila
+      return(
+        <div>
+          <button className={this.props.color[0]} onClick={() => this.props.onClick(0)}> 
+            {this.props.numValor[0]}
+          </button>
+          <button className={this.props.color[1]} onClick={() => this.props.onClick(1)}>
+            {this.props.numValor[1]}
+          </button>
+          <button className={this.props.color[2]} onClick={() => this.props.onClick(2)}>
+            {this.props.numValor[2]}
+          </button>
+          <button className={this.props.color[3]} onClick={() => this.props.onClick(3)}>
+            {this.props.numValor[3]}
+          </button>
+          <button className={this.props.color[4]} onClick={() => this.props.onClick(4)}>
+            {this.props.numValor[4]}
+          </button>
+          <button className={this.props.color[5]} onClick={() => this.props.onClick(5)}>
+            {this.props.numValor[5]}
+          </button>
+          <button className={this.props.color[6]} onClick={() => this.props.onClick(6)}>
+            {this.props.numValor[6]}
+          </button>
+          <button className={this.props.color[7]} onClick={() => this.props.onClick(7)}>
+            {this.props.numValor[7]}
+          </button>
+          <button className={this.props.color[8]} onClick={() => this.props.onClick(8)}>
+            {this.props.numValor[8]}
+          </button>
+        </div>
+      );
+    }
+  }
+
+  class Tablero extends React.Component { //Crea el tablero
+    constructor(props) {
+      super(props);
+      this.estado = {
+        cuadros: inicializaMatriz(), // muestra el color
+        valormostrar: inicializaMatriz(), // muestra el numero o la mina en el cuadro
+        valor: inicializaMatriz(),   // guarda el valor que tiene el cuadro, si es un numero, mina o nulo
+        listo:0, //bandera diciendo que ya coloco las bombas o no
+        perdiste:null,
+      };
+      this.state={segundos:0};
+      this.timerTick = this.timerTick.bind(this);
+    }
+    timerTick()
+      {
+        if (!this.state.perdiste ) 
+        {
+          this.setState({segundos: this.state.segundos + 1});
+        }
+      }
+    componentDidMount()
+      {
+        setInterval(this.timerTick,1000);
+      }
+
+    iniciar(valor,cuadros)
+    {
+        var RandNumi;
+        var RandNumj;
+        for (var i = 0 ; i < 10; i++) {
+          RandNumi = Math.floor(Math.random()*9);
+          RandNumj = Math.floor(Math.random()*9);
+          valor[RandNumi][RandNumj] = "*"; // coloca una mina en el tablero
+        }
+        //============================================================================
+        //============================================================================
+        var i1
+        var j1
+        for(var i = 0; i < 9; i++){ //calcula los numeros alrededos de las minas
+          for(var j = 0; j < 9; j++){                
+            if(valor[i][j] == "*"){
+              if(i == 0 && j == 0){                      
+
+                for(i1 = i; i1 <= i + 1; i1++){
+                  for(j1 = j; j1 <= j + 1; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }  
+                  }
+                }
+
+              }
+              else if (i == 0 && (j > 0 && j < 8)) {    
+
+                for(i1 = i; i1 <= i + 1; i1++){
+                  for(j1 = j-1; j1 <= j+1; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }
+              else if(i == 0 && j == 8){
+
+                for(i1 = i; i1 <= i+1; i1++){
+                  for(j1 = j-1; j1 <= j; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }
+              else if(j == 8 && (i > 0 && i < 8)){
+
+                for(i1 = i-1; i1 <= i+1; i1++){
+                  for(j1 = j-1; j1 <= j; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }
+              else if(i == 8 && j == 8){
+
+                for(i1 = i - 1; i1 <= i; i1++){
+                  for(j1 = j - 1 ; j1 <= j; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }
+              else if(i == 8 && (j > 0 && j < 8)){
+
+                for(i1 = i - 1; i1 <= i; i1++){
+                  for(j1 = j - 1; j1 <= j + 1; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }
+              else if(i == 8 && j == 0){
+
+                for(i1 = i - 1; i1 <= i; i1++){
+                  for(j1 = j; j1 <= j + 1; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }
+              else if(j == 0 && (i > 0 && i < 8)){
+
+                for(i1 = i - 1; i1 <= i + 1; i1++){
+                  for(j1 = j; j1 <= j + 1; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }else{
+
+                for(i1 = i-1; i1 <= i+1; i1++){
+                  for(j1 = j-1; j1 <= j+1; j1++){                 
+                    if(valor[i1][j1] != "*"){
+                      valor[i1][j1] = valor[i1][j1]+1;                  
+                    }
+                  }
+                }
+
+              }
+            }
+          }
+        }
+      
+        //============================================================================
+        //============================================================================
+        for (var i1 = 0; i1 < 9; i1++) {
+          for (var j1 = 0; j1 < 9; j1++) {
+            this.estado.cuadros[i1][j1] = "square"; //el color de los cuadros
+          }
+        }
+    }
+
+    verificarMina(Fila,Columna) //muestra los numero o las minas
+    {
+
+      const cuadros = this.estado.cuadros;
+      const valormostrar = this.estado.valormostrar;
+      const valor = this.estado.valor;
+      const listo = this.estado.listo;
+      var fail = this.estado.fail;
+      var i2;
+      var j2;
+      var ncuadros = 0;
+      for ( i2 = 0; i2 < 9 ; i2++) {
+        for ( j2 = 0; j2 < 9 ; j2++) {
+          if (cuadros[i2][j2] == "square2") {
+            ncuadros = ncuadros + 1
+          }
+        }
+      }
+      if (ncuadros >= 71) {
+        fail = 1;
+      }
+
+      if (siPerdio(valormostrar) && !fail){
+        if (valor [Fila][Columna] == null) //si muestra un cuadro vacio
+        {
+          
+          abrirAlrededor(Fila,Columna,valor,valormostrar,cuadros); //funcion recurciba que expande los cuadros
+          
+        }
+        else if (valor [Fila][Columna] != "*")
+        {
+          valormostrar [Fila][Columna] = valor [Fila][Columna];
+          cuadros[Fila][Columna] = "square2";
+        }
+        else 
+        {
+          for ( i2 = 0; i2 < 9 ; i2++) {
+            for ( j2 = 0; j2 < 9 ; j2++) {
+              if (valor [i2][j2] == "*")
+              {
+                valormostrar[i2][j2] = valor[i2][j2];
+                fail = 1;
+              }
+            }
+          }
+        }
+      }
+
+      this.setState({
+        cuadros: this.estado.cuadros,
+        valormostrar: valormostrar,
+        valor: valor,
+        listo: listo,
+        perdiste: fail,
+      });
+    }
+
+
+    render() {
+      var num = 0;
+      let perdiste = null;
+      if (this.estado.listo == 0) { // verifica si ya estan las minas
+        this.iniciar(this.estado.valor,this.estado.cuadros);
+        this.estado.listo = 1;
+      }
+      for ( var i5 = 0; i5 < 9 ; i5++) {
+        for ( var j5 = 0; j5 < 9 ; j5++) {
+          if (this.estado.cuadros[i5][j5] == "square2")
+          {
+            num = num + 1;
+          }
+           if (num >= 71)
+          {
+            perdiste = "Felicidades, haz ganado.";
+          }
+          if (this.estado.valormostrar [i5][j5] == "*")
+            {
+              perdiste = "Perdiste, inténtalo de nuevo.";
+            }
+          }
+        }
+
+      return (
+        <div className="central">
+          <div className = "columnaIzquierda">
+            <Fila numValor={this.estado.valormostrar[0]} color = {this.estado.cuadros[0]} onClick={(i) => this.verificarMina(0,i)} />
+            <Fila numValor={this.estado.valormostrar[1]} color = {this.estado.cuadros[1]} onClick={(i) => this.verificarMina(1,i)} />
+            <Fila numValor={this.estado.valormostrar[2]} color = {this.estado.cuadros[2]} onClick={(i) => this.verificarMina(2,i)} />
+            <Fila numValor={this.estado.valormostrar[3]} color = {this.estado.cuadros[3]} onClick={(i) => this.verificarMina(3,i)} />
+            <Fila numValor={this.estado.valormostrar[4]} color = {this.estado.cuadros[4]} onClick={(i) => this.verificarMina(4,i)} />
+            <Fila numValor={this.estado.valormostrar[5]} color = {this.estado.cuadros[5]} onClick={(i) => this.verificarMina(5,i)} />
+            <Fila numValor={this.estado.valormostrar[6]} color = {this.estado.cuadros[6]} onClick={(i) => this.verificarMina(6,i)} />
+            <Fila numValor={this.estado.valormostrar[7]} color = {this.estado.cuadros[7]} onClick={(i) => this.verificarMina(7,i)} />
+            <Fila numValor={this.estado.valormostrar[8]} color = {this.estado.cuadros[8]} onClick={(i) => this.verificarMina(8,i)} />
+          </div>
+          <div className = "columnaDerecha">
+            <div>
+              <h1>{this.state.segundos}</h1>
+            </div>
+            <div className="mensaje">{perdiste}</div>
+            <div className="link"><a href="buscaminas.html">Jugar de nuevo</a></div>
+          </div>
+        </div>
+      );
+    }
+  }
+//======================================================================
+//=======================================================================
+	class Juego extends React.Component { // clase en donde se desarrolla el juego
+
+    render(){
+      return (
+        <div className="juego">
+          <Tablero/>
+        </div>
+      );
+    }
+  }	
+
+// ======================================================================
+
+		ReactDOM.render(
+  			<Juego/>,
+  				document.getElementById('Buscaminas')
+			);
+// ======================================================================
+
+    function inicializaMatriz(){ // crea la matriz/tabla
+      var tabla = [];
+      for(var i = 0; i <= 9; i++){             
+          tabla[i] = Array(9).fill(null);             
+        }
+      return tabla;
+    }
+
+    function siPerdio(valormostrar){
+      for (var i3 = 0; i3 < 9 ; i3++) {
+        for (var j3 = 0; j3 < 9 ; j3++) {
+          if (valormostrar [i3][j3] == "*")
+          {
+            return 0;
+          }
+        }
+      }
+      return 1;
+    }
+
+    function abrirCeros(vari,varj,fini,finj,cori,corj,valor,valormostrar,cuadros){
+      for(var i = vari; i <= fini; i++){
+        for(var j = varj; j <= finj; j++){                        
+          if(valor[i][j] == null){                     
+            if(i == cori && j == corj){                       
+              valormostrar[i][j] = null; 
+              cuadros[i][j] = "square2";                  
+            }else{
+              if( cuadros[i][j] != "square2"){
+                abrirAlrededor(i, j,valor,valormostrar,cuadros);
+              }                       
+            }
+          }else{
+            if(valor[i][j] != "*"){
+              valormostrar[i][j] = valor[i][j]
+              cuadros[i][j] = "square2";
+            }
+          }
+        }
+      }
+    }
+
+    function abrirAlrededor(xi,xj,valor,valormostrar,cuadros){
+      if(xi == 0 && xj == 0){
+        abrirCeros(xi, xj, xi + 1, xj + 1, xi, xj,valor,valormostrar,cuadros);
+      }
+      else if(xi == 0 && (xj > 0 && xj < 8)){
+        abrirCeros(xi, xj - 1, xi + 1, xj + 1, xi, xj,valor,valormostrar,cuadros);
+      }
+      else if(xi == 0 && xj == 8){
+        abrirCeros(xi, xj - 1, xi + 1, xj, xi, xj,valor,valormostrar,cuadros);
+      }
+      else if(xj == 8 && (xi > 0 && xi < 8)){
+        abrirCeros(xi - 1, xj - 1, xi + 1, xj, xi, xj,valor,valormostrar,cuadros);
+      }
+      else if(xi == 8 && xj == 8){
+        abrirCeros(xi - 1, xj - 1, xi, xj, xi, xj,valor,valormostrar,cuadros);
+      }
+      else if(xi == 8 && (xj > 0 && xj < 8)){
+        abrirCeros(xi - 1, xj - 1, xi, xj + 1, xi, xj,valor,valormostrar,cuadros);
+      }
+      else if(xi == 8 && xj == 0){
+        abrirCeros(xi - 1, xj, xi, xj + 1, xi, xj,valor,valormostrar,cuadros);
+      }
+      else if(xj == 0 && (xi > 0 && xi < 8)){
+        abrirCeros(xi - 1, xj, xi + 1, xj + 1, xi, xj,valor,valormostrar,cuadros);
+      }else{
+        abrirCeros(xi - 1, xj - 1, xi + 1, xj + 1, xi, xj,valor,valormostrar,cuadros);
+      } // funcion que verifica la posible posicion se un cuadro vacio
+    } 
+
+
+	</script>
+</body>
+</html>

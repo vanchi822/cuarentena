@@ -1,0 +1,62 @@
+body{
+    font: 14px "Century Gothic", Futura, sans-serif;
+    margin: 20px;
+}
+
+.juego{
+    display: flex;
+    justify-content: center;
+    background-color: #FFCC80;
+}
+
+.central{
+    display: flex;
+    justify-content: space-between;
+    width: 45%;
+    margin: 8% 0px;
+    text-align: center;
+}
+  
+.columnaIzquierda{
+    width: 360px;
+    height: 360px;                
+    border: 1px solid black;
+}
+
+.columnaDerecha{
+    width: 20%;
+}
+  
+.square{
+    width: 40px;
+    height: 40px;
+    border: 1px solid #34495E;
+    float: left;
+    background-color: #2874A6;        
+    font-size: 30;  
+}
+  
+.square2{
+    width: 40px;
+    height: 40px;
+    border: 1px solid #34495E;
+    float: left;
+    background-color: #48C9B0;        
+    font-size: 30;  
+}
+
+a {
+    text-decoration: none;
+    color: #F3EBE8;
+}
+
+.link{
+    background-color: #D9440F;
+    padding: 6px;
+    border-radius: 15px;
+}
+
+.mensaje{
+    margin: 5px 0px;
+    margin-bottom: 15px;
+}
